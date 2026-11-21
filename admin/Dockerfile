@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build
+# public/ may be empty (git does not store empty folders), so make sure it exists.
+RUN mkdir -p public && npm run build
 
 FROM node:22-alpine
 WORKDIR /app
