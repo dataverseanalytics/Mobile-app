@@ -1,0 +1,56 @@
+# Production stack WITHOUT a domain: served over plain HTTP on the server's IP.
+#   API   → http://SERVER_IP:API_PORT
+#   Admin → http://SERVER_IP:ADMIN_PORT
+#
+#   cd deploy
+#   docker compose -f docker-compose.ip.yml up -d --build
+#   docker compose -f docker-compose.ip.yml exec api python -m app.seed   # first time only
+#
+# Switch to docker-compose.yml (Caddy + HTTPS) once you have a domain; the
+# database volume is shared, so no data is lost.
+name: nutrilens-prod
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nutrilens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+      POSTGRES_DB: nutrilens
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nutrilens"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # No published port: only the API can reach the database.
+
+  api:
+    build: ../backend
+    restart: unless-stopped
+    env_file: backend.env
+    environment:
+      ENV: production
+      DATABASE_URL: postgresql+asyncpg://nutrilens:${POSTGRES_PASSWORD}@db:5432/nutrilens
+      CORS_ORIGINS: '["http://${SERVER_IP:?set SERVER_IP in deploy/.env}:${ADMIN_PORT:-3000}"]'
+    ports:
+      - "${API_PORT:-8001}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  admin:
+    build: ../admin
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8000
+      COOKIE_SECURE: "false"   # plain HTTP; remove once behind HTTPS
+    ports:
+      - "${ADMIN_PORT:-3000}:3000"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

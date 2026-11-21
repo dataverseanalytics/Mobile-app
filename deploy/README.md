@@ -8,6 +8,19 @@ Internet ──443──▶ Caddy ──▶ api.<domain>   → API (FastAPI) ─
                         └─▶ admin.<domain> → Admin (Next.js)
 ```
 
+## No domain yet? Run on IP + ports
+Use `docker-compose.ip.yml` (plain HTTP, no Caddy). In `.env` set `SERVER_IP`,
+`API_PORT` (8001), `ADMIN_PORT` (3000) and `POSTGRES_PASSWORD`, then:
+```bash
+ufw allow 8001/tcp && ufw allow 3000/tcp
+docker compose -f docker-compose.ip.yml up -d --build
+docker compose -f docker-compose.ip.yml exec api python -m app.seed
+```
+API: `http://SERVER_IP:8001`, admin: `http://SERVER_IP:3000`. Plain HTTP is fine
+for testing; for the Play Store and Razorpay live mode, add a domain and switch
+to the HTTPS setup below (`docker compose -f docker-compose.ip.yml down`, then
+`docker compose up -d --build` — the data stays).
+
 ## 1. Get a server and a domain
 - A VPS with **Ubuntu 24.04, 2 GB RAM** or more (DigitalOcean, AWS Lightsail,
   Hetzner, Hostinger…). For Indian users pick a Mumbai/Bangalore region.

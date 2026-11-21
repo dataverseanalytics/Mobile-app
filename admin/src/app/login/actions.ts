@@ -30,7 +30,8 @@ export async function login(_: LoginState, form: FormData): Promise<LoginState> 
   const { accessToken } = LoginResponse.parse(await res.json());
   (await cookies()).set(SESSION_COOKIE, accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // HTTPS-only in production; COOKIE_SECURE=false allows plain-HTTP setups (IP:port, no domain yet).
+    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === "true" : process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 12, // matches the backend's admin token lifetime
