@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* NutriLens admin — same brand as the app: paper, ink, one lime accent. */
+:root {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --surface-2: #f1eee7;
+  --text: #14140f;
+  --muted: #6b6a62;
+  --border: #e6e2d8;
+  --accent: #d4f25a;
+  --on-accent: #14140f;
+  --ink: #14140f;
+  --on-ink: #ffffff;
+  --danger: #d93a3f;
+  --success: #1f9d63;
+  --warning: #c77a06;
+  --protein: #ff6b4a;
+  --carbs: #f5a623;
+  --fat: #4c8dff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0e0c;
+    --surface: #171714;
+    --surface-2: #1f1f1b;
+    --text: #f4f3ee;
+    --muted: #a6a59c;
+    --border: #2e2e29;
+    --ink: #d4f25a;
+    --on-ink: #14140f;
+    --danger: #ff6369;
+    --success: #3cc48a;
+    --warning: #ffb84d;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-protein: var(--protein);
+  --color-carbs: var(--carbs);
+  --color-fat: var(--fat);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-sora);
+  --radius-card: 1.25rem;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Shared control styles as Tailwind v4 utilities (usable with @apply). */
+@utility input {
+  @apply block min-h-11 w-full rounded-xl border border-border bg-surface px-3.5 py-2 text-sm text-text placeholder:text-muted focus:border-text;
+}
+@utility btn {
+  @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-ink text-on-ink hover:opacity-90;
+}
+@utility btn-secondary {
+  @apply btn border border-border bg-surface text-text hover:bg-surface-2;
+}
+@utility btn-danger {
+  @apply btn border border-danger/40 bg-surface text-danger hover:bg-danger/10;
+}
+@utility card {
+  @apply rounded-[var(--radius-card)] border border-border bg-surface;
+}

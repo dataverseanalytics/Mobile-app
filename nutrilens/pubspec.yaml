@@ -1,0 +1,71 @@
+name: nutrilens
+description: "NutriLens — snap your plate, know your food. AI calorie & macro tracker."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # State management + dependency injection (compile-safe, testable).
+  flutter_riverpod: ^3.5.0
+  # Declarative routing with a stateful bottom-tab shell and deep links.
+  go_router: ^18.1.4
+  # Native share sheet for the viral share card.
+  share_plus: ^13.3.1
+  # Worldwide SMS one-time-password sign-in.
+  firebase_core: ^5.2.0
+  firebase_auth: ^7.1.0
+  # Every country's name, dial code and flag for the picker.
+  country_picker: ^2.0.28
+  # Per-country phone number validation and formatting (libphonenumber data).
+  phone_numbers_parser: ^9.0.29
+  # REST client for the NutriLens backend.
+  http: ^1.6.0
+  # Auth tokens in the Keychain / Android Keystore.
+  flutter_secure_storage: ^11.2.0
+  # Razorpay Checkout for Pro passes (UPI, cards, net banking, wallets).
+  razorpay_flutter: ^1.4.7
+  # Support email and store subscription links.
+  url_launcher: ^6.3.3
+  # Session, profile and diary persistence on device.
+  shared_preferences: ^2.5.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    # Inter — interface text (the workhorse of modern product UI).
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
+    # Sora — geometric display face for headlines and big numbers.
+    - family: Sora
+      fonts:
+        - asset: assets/fonts/Sora-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Sora-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Sora-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Sora-ExtraBold.ttf
+          weight: 800

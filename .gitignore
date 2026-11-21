@@ -1,0 +1,19 @@
+# Secrets — never commit (examples are fine)
+.env
+.env.*
+!.env.example
+*.pem
+*.jks
+*.keystore
+key.properties
+
+# Dependencies / build output
+node_modules/
+.venv/
+__pycache__/
+.next/
+build/
+
+# OS / editor
+.DS_Store
+Thumbs.db

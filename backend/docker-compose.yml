@@ -1,0 +1,38 @@
+# Local development stack: PostgreSQL + the API.
+#   docker compose up -d db          # database only (run the API with uvicorn)
+#   docker compose up -d --build     # everything in containers
+#
+# The explicit project name keeps this stack separate from any other
+# project whose folder is also called "backend".
+name: nutrilens
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: nutrilens
+      POSTGRES_PASSWORD: nutrilens
+      POSTGRES_DB: nutrilens
+    ports:
+      - "5434:5432"  # 5432/5433 are often taken by other local databases
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nutrilens"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://nutrilens:nutrilens@db:5432/nutrilens
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
