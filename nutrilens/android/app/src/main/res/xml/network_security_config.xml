@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HTTPS everywhere, except the test server reached by IP over plain HTTP.
+     Remove the domain-config once the API has a domain with HTTPS. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">147.93.104.58</domain>
+    </domain-config>
+</network-security-config>
