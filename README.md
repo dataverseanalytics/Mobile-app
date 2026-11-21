@@ -78,3 +78,7 @@ See `backend/README.md`. You'll need to:
 - choose `SMS_PROVIDER=twilio`
 - choose `AI_PROVIDER=openai` and provide `OPENAI_API_KEY`
 - add Razorpay keys and the webhook
+
+## Deploy
+
+See [deploy/README.md](deploy/README.md) — one server, Docker Compose, automatic HTTPS.

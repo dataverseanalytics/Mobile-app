@@ -1,0 +1,67 @@
+# Production stack: PostgreSQL + API + admin panel behind Caddy (automatic HTTPS).
+#
+#   cd deploy
+#   cp .env.example .env && cp backend.env.example backend.env   # then fill both in
+#   docker compose up -d --build
+#   docker compose exec api python -m app.seed                    # first time: admin + foods
+#
+name: nutrilens-prod
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nutrilens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+      POSTGRES_DB: nutrilens
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nutrilens"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # No published port: only the API can reach the database.
+
+  api:
+    build: ../backend
+    restart: unless-stopped
+    env_file: backend.env
+    environment:
+      ENV: production
+      DATABASE_URL: postgresql+asyncpg://nutrilens:${POSTGRES_PASSWORD}@db:5432/nutrilens
+      CORS_ORIGINS: '["https://${ADMIN_DOMAIN}"]'
+    depends_on:
+      db:
+        condition: service_healthy
+
+  admin:
+    build: ../admin
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8000
+    depends_on:
+      - api
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN in deploy/.env}
+      ADMIN_DOMAIN: ${ADMIN_DOMAIN:?set ADMIN_DOMAIN in deploy/.env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - admin
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

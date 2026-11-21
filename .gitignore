@@ -17,3 +17,6 @@ build/
 # OS / editor
 .DS_Store
 Thumbs.db
+
+# Deployment secrets
+deploy/backend.env

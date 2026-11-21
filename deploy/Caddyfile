@@ -1,0 +1,13 @@
+# Caddy gets and renews free HTTPS certificates (Let's Encrypt) automatically.
+{$API_DOMAIN} {
+	encode gzip
+	request_body {
+		max_size 12MB
+	}
+	reverse_proxy api:8000
+}
+
+{$ADMIN_DOMAIN} {
+	encode gzip
+	reverse_proxy admin:3000
+}
